@@ -11,10 +11,10 @@ import (
 )
 
 const (
-	windowWidth  = 600
-	windowHeight = 600
-	gameWidth    = 600
-	gameHeight   = 600
+	windowWidth  = 960
+	windowHeight = 640
+	gameWidth    = 960
+	gameHeight   = 640
 )
 
 type Game struct {
@@ -43,7 +43,7 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 func main() {
 	ebiten.SetWindowSize(windowWidth, windowHeight)
 	ebiten.SetWindowTitle("Hello, World!")
-	ebiten.SetTPS(120)
+	ebiten.SetTPS(60)
 	if err := ebiten.RunGame(newGame()); err != nil {
 		log.Fatal(err)
 	}

@@ -5,34 +5,40 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
-var playerSprite, _, _ = ebitenutil.NewImageFromFile("resources/sprites/dog.png")
+var spritePlayer, _, _ = ebitenutil.NewImageFromFile("resources/small_black_square.png")
 
 type Player struct {
-	x float64
-	y float64
+	x             float64
+	y             float64
+	verticalSpeed float64
 }
 
-func (d *Player) X() float64 {
-	return d.x
+func (p *Player) X() float64 {
+	return p.x
 }
 
-func (d *Player) Y() float64 {
-	return d.y
+func (p *Player) Y() float64 {
+	return p.y
 }
 
-func (d *Player) Image() *ebiten.Image {
-	return playerSprite
+func (p *Player) Image() *ebiten.Image {
+	return spritePlayer
 }
 
-func (d *Player) Update(world *World) {}
-
-func (d *Player) UpdatePlayer(world *World, inputs []ebiten.Key) {
+func (p *Player) Update(world *World, inputs []ebiten.Key) {
 	for _, k := range inputs {
 		switch k {
 		case ebiten.KeyLeft:
-			d.x--
+			p.x--
 		case ebiten.KeyRight:
-			d.x++
+			p.x++
+		case ebiten.KeyUp:
+			p.verticalSpeed = -3
 		}
+	}
+
+	p.y += p.verticalSpeed
+	if p.verticalSpeed < 3 {
+		p.verticalSpeed += 0.2
 	}
 }

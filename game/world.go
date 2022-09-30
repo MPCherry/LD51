@@ -1,6 +1,8 @@
 package game
 
 import (
+	"image/color"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
@@ -19,7 +21,7 @@ type World struct {
 
 func NewWorld() *World {
 	world := &World{}
-	world.objects = append(world.objects, &Dog{x: 10, y: 10})
+	world.objects = append(world.objects, &Player{x: 10, y: 200})
 
 	return world
 }
@@ -33,6 +35,7 @@ func UpdateWorld(world *World) {
 }
 
 func DrawObjects(screen *ebiten.Image, world *World) {
+	screen.Fill(color.White)
 	for _, object := range world.objects {
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(object.X(), object.Y())
