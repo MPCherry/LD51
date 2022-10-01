@@ -8,13 +8,15 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
-var spriteTeleporter, _, _ = ebitenutil.NewImageFromFile("resources/blue.png")
+var spriteTeleporter, _, _ = ebitenutil.NewImageFromFile("resources/sprites/teleport.png")
 
 type Teleporter struct {
-	x           float64
-	y           float64
-	destination *Teleporter
-	spriteIndex int
+	x            float64
+	y            float64
+	destination  *Teleporter
+	spriteIndex  int
+	frame        int
+	frameCounter int
 }
 
 func (t *Teleporter) X() float64 {
@@ -26,7 +28,7 @@ func (t *Teleporter) Y() float64 {
 }
 
 func (t *Teleporter) Image() *ebiten.Image {
-	return spriteTeleporter.SubImage(image.Rect(16*t.spriteIndex, 0, 16*t.spriteIndex+16, 16)).(*ebiten.Image)
+	return spriteTeleporter.SubImage(image.Rect(16*t.spriteIndex, 16*t.frame, 16*t.spriteIndex+16, 16+16*t.frame)).(*ebiten.Image)
 }
 
 func (t *Teleporter) Active() bool {
@@ -41,5 +43,21 @@ func (t *Teleporter) Update(world *World, inputs []ebiten.Key) {
 				player.newY = t.destination.y
 			}
 		}
+	}
+
+	t.frameCounter++
+	if t.frameCounter == 10 {
+		if t.destination == nil {
+			t.frame--
+		} else {
+			t.frame++
+		}
+		t.frameCounter = 0
+	}
+	if t.frame == 3 {
+		t.frame = 0
+	}
+	if t.frame == -1 {
+		t.frame = 2
 	}
 }

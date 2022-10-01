@@ -315,6 +315,9 @@ var respawnCounter = 0
 var respawnShadowCounter = 0
 var respawning = false
 
+var interluding = false
+var interludeCounter = 0
+
 var shadowCounter = 0
 
 var starting = true
@@ -387,12 +390,12 @@ func UpdateWorld(world *World) {
 	}
 
 	for _, object := range world.playerObjects {
-		if object.Active() {
+		if object.Active() && !interluding {
 			object.Update(world, world.keys)
 		}
 	}
 	for _, object := range world.wallObjects {
-		if object.Active() {
+		if object.Active() && !interluding {
 			object.Update(world, world.keys)
 		}
 	}
@@ -405,41 +408,49 @@ func UpdateWorld(world *World) {
 
 	recordCounter++
 	if recordCounter%600 == 0 && !respawning {
-		if world.players[0].carrying != nil {
-			gameover = true
-			goCause = "key"
-			fmt.Println("gameover, carrying key")
-			return
-		}
-		keyRecordCopy := make([][]ebiten.Key, len(keyRecording))
-		copy(keyRecordCopy, keyRecording)
-		keyRecording = [][]ebiten.Key{}
-
-		player := &Player{x: 16 * 5, y: 640 - 32, newX: 16 * 5, newY: 640 - 32, first: false, keyRecord: keyRecordCopy, active: true, letGoOfPickup: true}
-		world.players = append(world.players, player)
-		world.playerObjects = append(world.playerObjects, player)
-		shadowCounter++
-		respawning = true
-		respawnShadowCounter = 0
-		respawnCounter = 0
-		for _, player := range world.players {
-			player.x = -32
-			player.newX = -32
-			player.y = -32
-			player.newY = -32
-			player.active = false
-			player.carrying = nil
-			player.letGoOfPickup = true
-		}
-		for _, swtch := range world.switchObjects {
-			if swtch.resets {
-				swtch.activated = false
+		interluding = true
+		interludeCounter = 0
+	}
+	if interluding {
+		interludeCounter++
+		if interludeCounter == 60 {
+			interluding = false
+			if world.players[0].carrying != nil {
+				gameover = true
+				goCause = "key"
+				fmt.Println("gameover, carrying key")
+				return
 			}
-		}
-		for _, key := range world.keyList {
-			key.x = key.originX
-			key.y = key.originY
-			key.active = true
+			keyRecordCopy := make([][]ebiten.Key, len(keyRecording))
+			copy(keyRecordCopy, keyRecording)
+			keyRecording = [][]ebiten.Key{}
+
+			player := &Player{x: 16 * 5, y: 640 - 32, newX: 16 * 5, newY: 640 - 32, first: false, keyRecord: keyRecordCopy, active: true, letGoOfPickup: true}
+			world.players = append(world.players, player)
+			world.playerObjects = append(world.playerObjects, player)
+			shadowCounter++
+			respawning = true
+			respawnShadowCounter = 0
+			respawnCounter = 0
+			for _, player := range world.players {
+				player.x = -32
+				player.newX = -32
+				player.y = -32
+				player.newY = -32
+				player.active = false
+				player.carrying = nil
+				player.letGoOfPickup = true
+			}
+			for _, swtch := range world.switchObjects {
+				if swtch.resets {
+					swtch.activated = false
+				}
+			}
+			for _, key := range world.keyList {
+				key.x = key.originX
+				key.y = key.originY
+				key.active = true
+			}
 		}
 	}
 
@@ -513,16 +524,16 @@ func DrawObjects(screen *ebiten.Image, world *World) {
 			screen.DrawImage(winScreen, op)
 		}
 	} else {
-		// op := &ebiten.DrawImageOptions{}
-		// if bottomCoverDraw {
-		// 	screen.DrawImage(bottomCover, op)
-		// }
-		// if middleCoverDraw {
-		// 	screen.DrawImage(middleCover, op)
-		// }
-		// if rightCoverDraw {
-		// 	screen.DrawImage(rightCover, op)
-		// }
+		op := &ebiten.DrawImageOptions{}
+		if bottomCoverDraw {
+			screen.DrawImage(bottomCover, op)
+		}
+		if middleCoverDraw {
+			screen.DrawImage(middleCover, op)
+		}
+		if rightCoverDraw {
+			screen.DrawImage(rightCover, op)
+		}
 	}
 	// ebitenutil.DebugPrint(screen, fmt.Sprintf("%d", recordCounter))
 }
