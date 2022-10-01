@@ -9,7 +9,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
-var spriteSwitch, _, _ = ebitenutil.NewImageFromFile("resources/green.png")
+var spriteSwitch, _, _ = ebitenutil.NewImageFromFile("resources/sprites/switch.png")
 
 type Switch struct {
 	x           float64
@@ -32,6 +32,7 @@ func (s *Switch) Y() float64 {
 
 func (s *Switch) Image() *ebiten.Image {
 	return spriteSwitch.SubImage(image.Rect(16*s.spriteIndex, 0, 16*s.spriteIndex+16, 16)).(*ebiten.Image)
+	// return spriteSwitch.SubImage(image.Rect(0, 0, 16, 16)).(*ebiten.Image)
 }
 
 func (s *Switch) Active() bool {
