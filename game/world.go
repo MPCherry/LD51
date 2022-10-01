@@ -86,16 +86,16 @@ func NewWorld() *World {
 	world.switchObjects = append(world.switchObjects, swtch0)
 	world.wallObjects = append(world.wallObjects, swtch0)
 
-	// door0a := &Wall{x: 16 * 4, y: 640 - 32 - 16*3, spriteIndex: 0, wallSwitch: swtch0}
-	// world.wallObjects = append(world.wallObjects, door0a)
-	// door0b := &Wall{x: 16 * 5, y: 640 - 32 - 16*3, spriteIndex: 0, wallSwitch: swtch0}
-	// world.wallObjects = append(world.wallObjects, door0b)
-	// door0c := &Wall{x: 16 * 6, y: 640 - 32 - 16*3, spriteIndex: 0, wallSwitch: swtch0}
-	// world.wallObjects = append(world.wallObjects, door0c)
-	// door0d := &Wall{x: 16 * 4, y: 640 - 32 - 16*4, spriteIndex: 0, wallSwitch: swtch0}
-	// world.wallObjects = append(world.wallObjects, door0d)
-	// door0e := &Wall{x: 16 * 6, y: 640 - 32 - 16*4, spriteIndex: 0, wallSwitch: swtch0}
-	// world.wallObjects = append(world.wallObjects, door0e)
+	door0a := &Wall{x: 16 * 4, y: 640 - 32 - 16*3, spriteIndex: 0, wallSwitch: swtch0}
+	world.wallObjects = append(world.wallObjects, door0a)
+	door0b := &Wall{x: 16 * 5, y: 640 - 32 - 16*3, spriteIndex: 0, wallSwitch: swtch0}
+	world.wallObjects = append(world.wallObjects, door0b)
+	door0c := &Wall{x: 16 * 6, y: 640 - 32 - 16*3, spriteIndex: 0, wallSwitch: swtch0}
+	world.wallObjects = append(world.wallObjects, door0c)
+	door0d := &Wall{x: 16 * 4, y: 640 - 32 - 16*4, spriteIndex: 0, wallSwitch: swtch0}
+	world.wallObjects = append(world.wallObjects, door0d)
+	door0e := &Wall{x: 16 * 6, y: 640 - 32 - 16*4, spriteIndex: 0, wallSwitch: swtch0}
+	world.wallObjects = append(world.wallObjects, door0e)
 
 	// Second chamber
 	tele1D := &Teleporter{x: 16 * 23, y: 16*8 + 16*13, spriteIndex: 1}
@@ -167,6 +167,28 @@ func NewWorld() *World {
 	swtch4 := &Switch{x: 16 * 55, y: 16*8 + 16*22 - 16*3*9 - 16, spriteIndex: 4}
 	world.switchObjects = append(world.switchObjects, swtch4)
 	world.wallObjects = append(world.wallObjects, swtch4)
+
+	door1a := &Wall{x: 16 * 7, y: 640 - 32 - 16*3, spriteIndex: 1, wallSwitch: swtch1}
+	world.wallObjects = append(world.wallObjects, door1a)
+	door1b := &Wall{x: 16 * 8, y: 640 - 32 - 16*3, spriteIndex: 1, wallSwitch: swtch1}
+	world.wallObjects = append(world.wallObjects, door1b)
+	door1c := &Wall{x: 16 * 9, y: 640 - 32 - 16*3, spriteIndex: 1, wallSwitch: swtch1}
+	world.wallObjects = append(world.wallObjects, door1c)
+	door1d := &Wall{x: 16 * 7, y: 640 - 32 - 16*4, spriteIndex: 1, wallSwitch: swtch1}
+	world.wallObjects = append(world.wallObjects, door1d)
+	door1e := &Wall{x: 16 * 9, y: 640 - 32 - 16*4, spriteIndex: 1, wallSwitch: swtch1}
+	world.wallObjects = append(world.wallObjects, door1e)
+
+	door2a := &Wall{x: 16 * 10, y: 640 - 32 - 16*3, spriteIndex: 2, wallSwitch: swtch2}
+	world.wallObjects = append(world.wallObjects, door2a)
+	door2b := &Wall{x: 16 * 11, y: 640 - 32 - 16*3, spriteIndex: 2, wallSwitch: swtch2}
+	world.wallObjects = append(world.wallObjects, door2b)
+	door2c := &Wall{x: 16 * 12, y: 640 - 32 - 16*3, spriteIndex: 2, wallSwitch: swtch2}
+	world.wallObjects = append(world.wallObjects, door2c)
+	door2d := &Wall{x: 16 * 10, y: 640 - 32 - 16*4, spriteIndex: 2, wallSwitch: swtch2}
+	world.wallObjects = append(world.wallObjects, door2d)
+	door2e := &Wall{x: 16 * 12, y: 640 - 32 - 16*4, spriteIndex: 2, wallSwitch: swtch2}
+	world.wallObjects = append(world.wallObjects, door2e)
 
 	// Bottom chamber
 	tele3D := &Teleporter{x: 16 * 42, y: 16*6 + 16*24, spriteIndex: 3}
