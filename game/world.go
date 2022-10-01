@@ -256,6 +256,41 @@ func NewWorld() *World {
 	door8 := &Wall{x: 16 * 11, y: 16*6 + 16*21, spriteIndex: 9, wallSwitch: swtch9}
 	world.wallObjects = append(world.wallObjects, door8)
 
+	swtch10 := &Switch{x: 16 * 3, y: 16*6 + 16*25, spriteIndex: 10, resets: false}
+	world.switchObjects = append(world.switchObjects, swtch10)
+	world.wallObjects = append(world.wallObjects, swtch10)
+	world.wallObjects = append(world.wallObjects, &Wall{x: 16 * 3, y: 16*6 + 16*26})
+
+	swtch11 := &Switch{x: 16 * 54, y: 16*6 + 16*30, spriteIndex: 11, resets: false, final: true}
+	world.switchObjects = append(world.switchObjects, swtch11)
+	world.wallObjects = append(world.wallObjects, swtch11)
+	world.wallObjects = append(world.wallObjects, &Wall{x: 16 * 54, y: 16*7 + 16*30})
+	world.wallObjects = append(world.wallObjects, &Wall{x: 16 * 54, y: 16*8 + 16*30})
+	world.wallObjects = append(world.wallObjects, &Wall{x: 16 * 53, y: 16*8 + 16*30})
+	world.wallObjects = append(world.wallObjects, &Wall{x: 16 * 55, y: 16*8 + 16*30})
+
+	// Final Doors
+	// for i := 0; i < 3; i++ {
+	// 	for j := 0; j < 5; j++ {
+	// 		door9 := &Wall{x: 16*31 + 16*float64(i), y: 16*6 + 16*28 + 16*float64(j), spriteIndex: 10, wallSwitch: swtch10}
+	// 		world.wallObjects = append(world.wallObjects, door9)
+	// 	}
+	// }
+
+	// for i := 0; i < 3; i++ {
+	// 	for j := 0; j < 5; j++ {
+	// 		door10 := &Wall{x: 16*35 + 16*float64(i), y: 16*6 + 16*28 + 16*float64(j), spriteIndex: 3, wallSwitch: swtch3}
+	// 		world.wallObjects = append(world.wallObjects, door10)
+	// 	}
+	// }
+
+	// for i := 0; i < 3; i++ {
+	// 	for j := 0; j < 5; j++ {
+	// 		door11 := &Wall{x: 16*39 + 16*float64(i), y: 16*6 + 16*28 + 16*float64(j), spriteIndex: 4, wallSwitch: swtch4}
+	// 		world.wallObjects = append(world.wallObjects, door11)
+	// 	}
+	// }
+
 	// world.wallObjects = append(world.wallObjects, &Wall{x: 16 * 3, y: 640 - 16*3})
 
 	// keyA := &Key{x: 16 * 7, y: 640 - 16*2, originX: 16 * 7, originY: 640 - 16*2, active: true}
@@ -282,13 +317,63 @@ var respawning = false
 
 var shadowCounter = 0
 
+var starting = true
+var canStart = true
 var gameover = false
 
 func UpdateWorld(world *World) {
+	world.keys = inpututil.AppendPressedKeys(world.keys[:0])
+	if inpututil.IsKeyJustReleased(ebiten.KeyR) {
+		canStart = true
+	}
+	if inpututil.IsKeyJustPressed(ebiten.KeyR) {
+		canStart = false
+		fmt.Println("Resetting game over")
+		gameover = false
+		starting = true
+
+		for _, swtch := range world.switchObjects {
+			swtch.activated = false
+		}
+		for _, key := range world.keyList {
+			key.x = key.originX
+			key.y = key.originY
+			key.active = true
+		}
+		respawning = true
+		respawnShadowCounter = 0
+		respawnCounter = 0
+		keyRecording = [][]ebiten.Key{}
+		recordCounter = 0
+
+		for _, player := range world.players {
+			if !player.first {
+				player.active = false
+			}
+		}
+		player := world.players[0]
+		world.players = []*Player{}
+		world.players = append(world.players, player)
+		world.players[0].x = 16 * 5
+		world.players[0].newX = 16 * 5
+		world.players[0].y = 640 - 32
+		world.players[0].newY = 640 - 32
+		world.players[0].jumped = false
+		world.players[0].active = true
+		player.carrying = nil
+		player.letGoOfPickup = true
+
+	}
 	if gameover {
 		return
 	}
-	world.keys = inpututil.AppendPressedKeys(world.keys[:0])
+	if starting {
+		if len(world.keys) > 0 && canStart {
+			fmt.Println("Starting game")
+			starting = false
+		}
+		return
+	}
 
 	for _, object := range world.playerObjects {
 		if object.Active() {
@@ -309,6 +394,11 @@ func UpdateWorld(world *World) {
 
 	recordCounter++
 	if recordCounter%600 == 0 && !respawning {
+		if world.players[0].carrying != nil {
+			gameover = true
+			fmt.Println("gameover, carrying key")
+			return
+		}
 		keyRecordCopy := make([][]ebiten.Key, len(keyRecording))
 		copy(keyRecordCopy, keyRecording)
 		keyRecording = [][]ebiten.Key{}

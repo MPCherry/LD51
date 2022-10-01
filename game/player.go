@@ -1,6 +1,7 @@
 package game
 
 import (
+	"fmt"
 	"image"
 	"math"
 
@@ -121,6 +122,7 @@ func (p *Player) Update(world *World, keys []ebiten.Key) {
 
 		if math.Abs(shadow.y-p.newY) < 16 && math.Abs(shadow.x-p.newX) < 16 {
 			gameover = true
+			fmt.Println("gameover, collision")
 		}
 	}
 }

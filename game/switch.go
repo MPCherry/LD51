@@ -1,6 +1,7 @@
 package game
 
 import (
+	"fmt"
 	"image"
 	"math"
 
@@ -17,6 +18,7 @@ type Switch struct {
 	key         *Key
 	resets      bool
 	spriteIndex int
+	final       bool
 }
 
 func (s *Switch) X() float64 {
@@ -46,6 +48,11 @@ func (s *Switch) Update(world *World, inputs []ebiten.Key) {
 					player.carrying = nil
 					s.key.active = false
 				}
+			}
+
+			if s.final {
+				gameover = true
+				fmt.Println("Won")
 			}
 		}
 	}
