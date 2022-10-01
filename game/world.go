@@ -1,11 +1,9 @@
 package game
 
 import (
-	"fmt"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
@@ -50,6 +48,11 @@ func NewWorld() *World {
 	world.wallObjects = append(world.wallObjects, switchA)
 	world.wallObjects = append(world.wallObjects, &Wall{x: 16 * 6, y: 640 - 16*3, wallSwitch: switchA})
 
+	teleB := &Teleporter{x: 16 * 8, y: 16 * 1}
+	teleA := &Teleporter{x: 16 * 8, y: 640 - 16*2, destination: teleB}
+	world.wallObjects = append(world.wallObjects, teleA)
+	world.wallObjects = append(world.wallObjects, teleB)
+
 	return world
 }
 
@@ -74,8 +77,10 @@ func UpdateWorld(world *World) {
 		}
 	}
 	for _, player := range world.players {
-		player.x = player.newX
-		player.y = player.newY
+		if player.first || player.keyIndex < len(player.keyRecord) {
+			player.x = player.newX
+			player.y = player.newY
+		}
 	}
 
 	recordCounter++
@@ -145,5 +150,5 @@ func DrawObjects(screen *ebiten.Image, world *World) {
 			screen.DrawImage(object.Image(), op)
 		}
 	}
-	ebitenutil.DebugPrint(screen, fmt.Sprintf("%t", world.players[0].carrying == nil))
+	// ebitenutil.DebugPrint(screen, fmt.Sprintf("%t", world.players[0].carrying == nil))
 }
