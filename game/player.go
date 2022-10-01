@@ -1,6 +1,7 @@
 package game
 
 import (
+	"image"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -39,7 +40,11 @@ func (p *Player) Y() float64 {
 }
 
 func (p *Player) Image() *ebiten.Image {
-	return spritePlayer
+	if p.first {
+		return spritePlayer.SubImage(image.Rect(0, 0, 16, 16)).(*ebiten.Image)
+	} else {
+		return spritePlayer.SubImage(image.Rect(16, 0, 32, 16)).(*ebiten.Image)
+	}
 }
 
 func (p *Player) Active() bool {

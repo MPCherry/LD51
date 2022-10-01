@@ -1,6 +1,7 @@
 package game
 
 import (
+	"image"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -8,12 +9,13 @@ import (
 )
 
 var spriteWall, _, _ = ebitenutil.NewImageFromFile("resources/small_red_square.png")
-var spriteWallSwitched, _, _ = ebitenutil.NewImageFromFile("resources/small_orange_square.png")
+var spriteWallSwitched, _, _ = ebitenutil.NewImageFromFile("resources/orange.png")
 
 type Wall struct {
-	x          float64
-	y          float64
-	wallSwitch *Switch
+	x           float64
+	y           float64
+	wallSwitch  *Switch
+	spriteIndex int
 }
 
 func (w *Wall) X() float64 {
@@ -26,7 +28,7 @@ func (w *Wall) Y() float64 {
 
 func (w *Wall) Image() *ebiten.Image {
 	if w.wallSwitch != nil {
-		return spriteWallSwitched
+		return spriteWallSwitched.SubImage(image.Rect(16*w.spriteIndex, 0, 16*w.spriteIndex+16, 16)).(*ebiten.Image)
 	}
 	return spriteWall
 }

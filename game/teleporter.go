@@ -1,18 +1,20 @@
 package game
 
 import (
+	"image"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
-var spriteTeleporter, _, _ = ebitenutil.NewImageFromFile("resources/small_blue_square.png")
+var spriteTeleporter, _, _ = ebitenutil.NewImageFromFile("resources/blue.png")
 
 type Teleporter struct {
 	x           float64
 	y           float64
 	destination *Teleporter
+	spriteIndex int
 }
 
 func (t *Teleporter) X() float64 {
@@ -24,7 +26,7 @@ func (t *Teleporter) Y() float64 {
 }
 
 func (t *Teleporter) Image() *ebiten.Image {
-	return spriteTeleporter
+	return spriteTeleporter.SubImage(image.Rect(16*t.spriteIndex, 0, 16*t.spriteIndex+16, 16)).(*ebiten.Image)
 }
 
 func (t *Teleporter) Active() bool {
