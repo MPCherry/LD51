@@ -3,6 +3,7 @@ package game
 import (
 	"fmt"
 	"image/color"
+	"os"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -86,16 +87,16 @@ func NewWorld() *World {
 	world.switchObjects = append(world.switchObjects, swtch0)
 	world.wallObjects = append(world.wallObjects, swtch0)
 
-	// door0a := &Wall{x: 16 * 4, y: 640 - 32 - 16*3, spriteIndex: 0, wallSwitch: swtch0}
-	// world.wallObjects = append(world.wallObjects, door0a)
-	// door0b := &Wall{x: 16 * 5, y: 640 - 32 - 16*3, spriteIndex: 0, wallSwitch: swtch0}
-	// world.wallObjects = append(world.wallObjects, door0b)
-	// door0c := &Wall{x: 16 * 6, y: 640 - 32 - 16*3, spriteIndex: 0, wallSwitch: swtch0}
-	// world.wallObjects = append(world.wallObjects, door0c)
-	// door0d := &Wall{x: 16 * 4, y: 640 - 32 - 16*4, spriteIndex: 0, wallSwitch: swtch0}
-	// world.wallObjects = append(world.wallObjects, door0d)
-	// door0e := &Wall{x: 16 * 6, y: 640 - 32 - 16*4, spriteIndex: 0, wallSwitch: swtch0}
-	// world.wallObjects = append(world.wallObjects, door0e)
+	door0a := &Wall{x: 16 * 4, y: 640 - 32 - 16*3, spriteIndex: 0, wallSwitch: swtch0}
+	world.wallObjects = append(world.wallObjects, door0a)
+	door0b := &Wall{x: 16 * 5, y: 640 - 32 - 16*3, spriteIndex: 0, wallSwitch: swtch0}
+	world.wallObjects = append(world.wallObjects, door0b)
+	door0c := &Wall{x: 16 * 6, y: 640 - 32 - 16*3, spriteIndex: 0, wallSwitch: swtch0}
+	world.wallObjects = append(world.wallObjects, door0c)
+	door0d := &Wall{x: 16 * 4, y: 640 - 32 - 16*4, spriteIndex: 0, wallSwitch: swtch0}
+	world.wallObjects = append(world.wallObjects, door0d)
+	door0e := &Wall{x: 16 * 6, y: 640 - 32 - 16*4, spriteIndex: 0, wallSwitch: swtch0}
+	world.wallObjects = append(world.wallObjects, door0e)
 
 	// Second chamber
 	tele1D := &Teleporter{x: 16 * 23, y: 16*8 + 16*13, spriteIndex: 1}
@@ -132,11 +133,11 @@ func NewWorld() *World {
 	world.keyList = append(world.keyList, key2)
 	world.wallObjects = append(world.wallObjects, key2)
 
-	swtch1 := &Switch{x: 16 * 42, y: 16 * 12, key: key1, spriteIndex: 1, resets: false, cover: 3}
+	swtch1 := &Switch{x: 16 * 42, y: 16 * 12, key: key1, spriteIndex: 1, resets: false, cover: 4}
 	world.switchObjects = append(world.switchObjects, swtch1)
 	world.wallObjects = append(world.wallObjects, swtch1)
 
-	swtch2 := &Switch{x: 16 * 4, y: 16 * 12, key: key2, spriteIndex: 2, resets: false, cover: 4}
+	swtch2 := &Switch{x: 16 * 4, y: 16 * 12, key: key2, spriteIndex: 2, resets: false, cover: 2}
 	world.switchObjects = append(world.switchObjects, swtch2)
 	world.wallObjects = append(world.wallObjects, swtch2)
 
@@ -168,27 +169,27 @@ func NewWorld() *World {
 	world.switchObjects = append(world.switchObjects, swtch4)
 	world.wallObjects = append(world.wallObjects, swtch4)
 
-	// door1a := &Wall{x: 16 * 7, y: 640 - 32 - 16*3, spriteIndex: 1, wallSwitch: swtch1}
-	// world.wallObjects = append(world.wallObjects, door1a)
-	// door1b := &Wall{x: 16 * 8, y: 640 - 32 - 16*3, spriteIndex: 1, wallSwitch: swtch1}
-	// world.wallObjects = append(world.wallObjects, door1b)
-	// door1c := &Wall{x: 16 * 9, y: 640 - 32 - 16*3, spriteIndex: 1, wallSwitch: swtch1}
-	// world.wallObjects = append(world.wallObjects, door1c)
-	// door1d := &Wall{x: 16 * 7, y: 640 - 32 - 16*4, spriteIndex: 1, wallSwitch: swtch1}
-	// world.wallObjects = append(world.wallObjects, door1d)
-	// door1e := &Wall{x: 16 * 9, y: 640 - 32 - 16*4, spriteIndex: 1, wallSwitch: swtch1}
-	// world.wallObjects = append(world.wallObjects, door1e)
+	door1a := &Wall{x: 16 * 7, y: 640 - 32 - 16*3, spriteIndex: 1, wallSwitch: swtch1}
+	world.wallObjects = append(world.wallObjects, door1a)
+	door1b := &Wall{x: 16 * 8, y: 640 - 32 - 16*3, spriteIndex: 1, wallSwitch: swtch1}
+	world.wallObjects = append(world.wallObjects, door1b)
+	door1c := &Wall{x: 16 * 9, y: 640 - 32 - 16*3, spriteIndex: 1, wallSwitch: swtch1}
+	world.wallObjects = append(world.wallObjects, door1c)
+	door1d := &Wall{x: 16 * 7, y: 640 - 32 - 16*4, spriteIndex: 1, wallSwitch: swtch1}
+	world.wallObjects = append(world.wallObjects, door1d)
+	door1e := &Wall{x: 16 * 9, y: 640 - 32 - 16*4, spriteIndex: 1, wallSwitch: swtch1}
+	world.wallObjects = append(world.wallObjects, door1e)
 
-	// door2a := &Wall{x: 16 * 10, y: 640 - 32 - 16*3, spriteIndex: 2, wallSwitch: swtch2}
-	// world.wallObjects = append(world.wallObjects, door2a)
-	// door2b := &Wall{x: 16 * 11, y: 640 - 32 - 16*3, spriteIndex: 2, wallSwitch: swtch2}
-	// world.wallObjects = append(world.wallObjects, door2b)
-	// door2c := &Wall{x: 16 * 12, y: 640 - 32 - 16*3, spriteIndex: 2, wallSwitch: swtch2}
-	// world.wallObjects = append(world.wallObjects, door2c)
-	// door2d := &Wall{x: 16 * 10, y: 640 - 32 - 16*4, spriteIndex: 2, wallSwitch: swtch2}
-	// world.wallObjects = append(world.wallObjects, door2d)
-	// door2e := &Wall{x: 16 * 12, y: 640 - 32 - 16*4, spriteIndex: 2, wallSwitch: swtch2}
-	// world.wallObjects = append(world.wallObjects, door2e)
+	door2a := &Wall{x: 16 * 10, y: 640 - 32 - 16*3, spriteIndex: 2, wallSwitch: swtch2}
+	world.wallObjects = append(world.wallObjects, door2a)
+	door2b := &Wall{x: 16 * 11, y: 640 - 32 - 16*3, spriteIndex: 2, wallSwitch: swtch2}
+	world.wallObjects = append(world.wallObjects, door2b)
+	door2c := &Wall{x: 16 * 12, y: 640 - 32 - 16*3, spriteIndex: 2, wallSwitch: swtch2}
+	world.wallObjects = append(world.wallObjects, door2c)
+	door2d := &Wall{x: 16 * 10, y: 640 - 32 - 16*4, spriteIndex: 2, wallSwitch: swtch2}
+	world.wallObjects = append(world.wallObjects, door2d)
+	door2e := &Wall{x: 16 * 12, y: 640 - 32 - 16*4, spriteIndex: 2, wallSwitch: swtch2}
+	world.wallObjects = append(world.wallObjects, door2e)
 
 	// Bottom chamber
 	tele3D := &Teleporter{x: 16 * 42, y: 16*6 + 16*24, spriteIndex: 3}
@@ -325,6 +326,10 @@ var goCause = ""
 var firstTime = true
 
 func UpdateWorld(world *World) {
+	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+		os.Exit(0)
+	}
+
 	world.keys = inpututil.AppendPressedKeys(world.keys[:0])
 	if inpututil.IsKeyJustReleased(ebiten.KeyR) {
 		canStart = true
@@ -334,6 +339,9 @@ func UpdateWorld(world *World) {
 		fmt.Println("Resetting game over")
 		gameover = false
 		starting = true
+		bottomCoverDraw = true
+		middleCoverDraw = true
+		rightCoverDraw = true
 
 		for _, swtch := range world.switchObjects {
 			swtch.activated = false
@@ -470,7 +478,7 @@ var winScreen, _, _ = ebitenutil.NewImageFromFile("resources/win.png")
 var bottomCover, _, _ = ebitenutil.NewImageFromFile("resources/bottom_cover.png")
 var bottomCoverDraw = true
 var middleCover, _, _ = ebitenutil.NewImageFromFile("resources/middle_cover.png")
-var middleCoverDraw = false
+var middleCoverDraw = true
 var rightCover, _, _ = ebitenutil.NewImageFromFile("resources/righ_cover.png")
 var rightCoverDraw = true
 
