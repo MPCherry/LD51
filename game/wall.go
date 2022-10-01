@@ -26,22 +26,28 @@ func (w *Wall) Image() *ebiten.Image {
 	return spriteWall
 }
 
+func (w *Wall) Active() bool {
+	return true
+}
+
 func (w *Wall) Update(world *World, inputs []ebiten.Key) {
-	if math.Abs(w.y-world.player.newY) < 16 && world.player.newY < w.y && math.Abs(w.x-world.player.x) < 16 {
-		world.player.newY = w.y - 16
-		world.player.verticalSpeed = 0
-		world.player.jumped = false
-	}
+	for _, player := range world.players {
+		if math.Abs(w.y-player.newY) < 16 && player.newY < w.y && math.Abs(w.x-player.x) < 16 {
+			player.newY = w.y - 16
+			player.verticalSpeed = 0
+			player.jumped = false
+		}
 
-	if math.Abs(w.y-world.player.newY) < 16 && world.player.newY > w.y && math.Abs(w.x-world.player.x) < 16 {
-		world.player.newY = w.y + 16
-		world.player.verticalSpeed = 0
-	}
-	if math.Abs(w.x-world.player.newX) < 16 && world.player.newX > w.x && math.Abs(w.y-world.player.y) < 16 {
-		world.player.newX = w.x + 16
-	}
+		if math.Abs(w.y-player.newY) < 16 && player.newY > w.y && math.Abs(w.x-player.x) < 16 {
+			player.newY = w.y + 16
+			player.verticalSpeed = 0
+		}
+		if math.Abs(w.x-player.newX) < 16 && player.newX > w.x && math.Abs(w.y-player.y) < 16 {
+			player.newX = w.x + 16
+		}
 
-	if math.Abs(w.x-world.player.newX) < 16 && world.player.newX < w.x && math.Abs(w.y-world.player.y) < 16 {
-		world.player.newX = w.x - 16
+		if math.Abs(w.x-player.newX) < 16 && player.newX < w.x && math.Abs(w.y-player.y) < 16 {
+			player.newX = w.x - 16
+		}
 	}
 }
