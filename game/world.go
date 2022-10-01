@@ -82,7 +82,7 @@ func NewWorld() *World {
 	}
 	world.wallObjects = append(world.wallObjects, &Wall{x: 960 - 16*35 - 16*3, y: 16 * 7})
 
-	swtch0 := &Switch{x: 16 * 3, y: 16 * 7, key: key0, spriteIndex: 0}
+	swtch0 := &Switch{x: 16 * 3, y: 16 * 7, key: key0, spriteIndex: 0, resets: false}
 	world.switchObjects = append(world.switchObjects, swtch0)
 	world.wallObjects = append(world.wallObjects, swtch0)
 
@@ -132,11 +132,11 @@ func NewWorld() *World {
 	world.keyList = append(world.keyList, key2)
 	world.wallObjects = append(world.wallObjects, key2)
 
-	swtch1 := &Switch{x: 16 * 42, y: 16 * 12, key: key1, spriteIndex: 1}
+	swtch1 := &Switch{x: 16 * 42, y: 16 * 12, key: key1, spriteIndex: 1, resets: false}
 	world.switchObjects = append(world.switchObjects, swtch1)
 	world.wallObjects = append(world.wallObjects, swtch1)
 
-	swtch2 := &Switch{x: 16 * 3, y: 16 * 12, key: key2, spriteIndex: 2}
+	swtch2 := &Switch{x: 16 * 3, y: 16 * 12, key: key2, spriteIndex: 2, resets: false}
 	world.switchObjects = append(world.switchObjects, swtch2)
 	world.wallObjects = append(world.wallObjects, swtch2)
 
@@ -161,10 +161,10 @@ func NewWorld() *World {
 		// world.wallObjects = append(world.wallObjects, &Wall{x: 16 * 57, y: 16*8 + 16*21 - 16*3*float64(i)})
 	}
 
-	swtch3 := &Switch{x: 16 * 50, y: 16*8 + 16*22 - 16*3*9 - 16, spriteIndex: 3}
+	swtch3 := &Switch{x: 16 * 50, y: 16*8 + 16*22 - 16*3*9 - 16, spriteIndex: 3, resets: false}
 	world.switchObjects = append(world.switchObjects, swtch3)
 	world.wallObjects = append(world.wallObjects, swtch3)
-	swtch4 := &Switch{x: 16 * 55, y: 16*8 + 16*22 - 16*3*9 - 16, spriteIndex: 4}
+	swtch4 := &Switch{x: 16 * 55, y: 16*8 + 16*22 - 16*3*9 - 16, spriteIndex: 4, resets: false}
 	world.switchObjects = append(world.switchObjects, swtch4)
 	world.wallObjects = append(world.wallObjects, swtch4)
 
@@ -225,23 +225,23 @@ func NewWorld() *World {
 		}
 	}
 
-	swtch5 := &Switch{x: 16 * 18, y: 16*6 + 16*26, spriteIndex: 5}
+	swtch5 := &Switch{x: 16 * 18, y: 16*6 + 16*26, spriteIndex: 5, resets: false}
 	world.switchObjects = append(world.switchObjects, swtch5)
 	world.wallObjects = append(world.wallObjects, swtch5)
 
-	swtch6 := &Switch{x: 16 * 18, y: 16*6 + 16*21, spriteIndex: 6}
+	swtch6 := &Switch{x: 16 * 18, y: 16*6 + 16*21, spriteIndex: 6, resets: false}
 	world.switchObjects = append(world.switchObjects, swtch6)
 	world.wallObjects = append(world.wallObjects, swtch6)
 
-	swtch7 := &Switch{x: 16 * 13, y: 16*6 + 16*26, spriteIndex: 7}
+	swtch7 := &Switch{x: 16 * 13, y: 16*6 + 16*26, spriteIndex: 7, resets: false}
 	world.switchObjects = append(world.switchObjects, swtch7)
 	world.wallObjects = append(world.wallObjects, swtch7)
 
-	swtch8 := &Switch{x: 16 * 13, y: 16*6 + 16*21, spriteIndex: 8}
+	swtch8 := &Switch{x: 16 * 13, y: 16*6 + 16*21, spriteIndex: 8, resets: false}
 	world.switchObjects = append(world.switchObjects, swtch8)
 	world.wallObjects = append(world.wallObjects, swtch8)
 
-	swtch9 := &Switch{x: 16 * 8, y: 16*6 + 16*26, spriteIndex: 9}
+	swtch9 := &Switch{x: 16 * 8, y: 16*6 + 16*26, spriteIndex: 9, resets: false}
 	world.switchObjects = append(world.switchObjects, swtch9)
 	world.wallObjects = append(world.wallObjects, swtch9)
 
@@ -330,7 +330,9 @@ func UpdateWorld(world *World) {
 			player.letGoOfPickup = true
 		}
 		for _, swtch := range world.switchObjects {
-			swtch.activated = false
+			if swtch.resets {
+				swtch.activated = false
+			}
 		}
 		for _, key := range world.keyList {
 			key.x = key.originX

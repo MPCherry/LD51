@@ -15,6 +15,7 @@ type Switch struct {
 	y           float64
 	activated   bool
 	key         *Key
+	resets      bool
 	spriteIndex int
 }
 
