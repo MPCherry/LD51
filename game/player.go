@@ -1,6 +1,8 @@
 package game
 
 import (
+	"math"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
@@ -24,6 +26,8 @@ type Player struct {
 	keyRecord     [][]ebiten.Key
 	keyIndex      int
 	active        bool
+	carrying      *Key
+	letGoOfPickup bool
 }
 
 func (p *Player) X() float64 {
@@ -56,6 +60,7 @@ func (p *Player) Update(world *World, keys []ebiten.Key) {
 		}
 	}
 
+	sawDown := false
 	for _, k := range keys {
 		switch k {
 		case ebiten.KeyLeft:
@@ -67,11 +72,40 @@ func (p *Player) Update(world *World, keys []ebiten.Key) {
 				p.verticalSpeed = -jumpHeight
 				p.jumped = true
 			}
+		case ebiten.KeyDown:
+			if p.letGoOfPickup {
+				if p.carrying != nil && !p.jumped {
+					p.carrying = nil
+					p.letGoOfPickup = false
+				}
+			}
+			sawDown = true
 		}
+	}
+	if !sawDown {
+		p.letGoOfPickup = true
 	}
 
 	p.newY = p.y + p.verticalSpeed
 	if p.verticalSpeed < 3 {
 		p.verticalSpeed += 0.2
+	}
+
+	for _, key := range world.keyList {
+		if math.Abs(key.y-p.newY) < 16 && math.Abs(key.x-p.newX) < 16 {
+			if p.carrying == nil {
+				for _, k := range keys {
+					if k == ebiten.KeyDown && p.letGoOfPickup {
+						p.carrying = key
+						p.letGoOfPickup = false
+					}
+				}
+			}
+		}
+	}
+
+	if p.carrying != nil {
+		p.carrying.x = p.x
+		p.carrying.y = p.y
 	}
 }

@@ -8,10 +8,12 @@ import (
 )
 
 var spriteWall, _, _ = ebitenutil.NewImageFromFile("resources/small_red_square.png")
+var spriteWallSwitched, _, _ = ebitenutil.NewImageFromFile("resources/small_orange_square.png")
 
 type Wall struct {
-	x float64
-	y float64
+	x          float64
+	y          float64
+	wallSwitch *Switch
 }
 
 func (w *Wall) X() float64 {
@@ -23,11 +25,18 @@ func (w *Wall) Y() float64 {
 }
 
 func (w *Wall) Image() *ebiten.Image {
+	if w.wallSwitch != nil {
+		return spriteWallSwitched
+	}
 	return spriteWall
 }
 
 func (w *Wall) Active() bool {
-	return true
+	if w.wallSwitch != nil {
+		return !w.wallSwitch.activated
+	} else {
+		return true
+	}
 }
 
 func (w *Wall) Update(world *World, inputs []ebiten.Key) {

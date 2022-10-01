@@ -1,9 +1,11 @@
 package game
 
 import (
+	"fmt"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
@@ -19,12 +21,14 @@ type World struct {
 	keys          []ebiten.Key
 	playerObjects []Object
 	wallObjects   []Object
+	switchObjects []*Switch
+	keyList       []*Key
 	players       []*Player
 }
 
 func NewWorld() *World {
 	world := &World{}
-	player := &Player{x: 16, y: 640 - 32, newX: 16, newY: 640 - 32, first: true, active: true}
+	player := &Player{x: 16, y: 640 - 32, newX: 16, newY: 640 - 32, first: true, active: true, letGoOfPickup: true}
 	world.players = append(world.players, player)
 	world.playerObjects = append(world.playerObjects, player)
 	for i := 0; i < 60; i++ {
@@ -36,6 +40,16 @@ func NewWorld() *World {
 		world.wallObjects = append(world.wallObjects, &Wall{x: 960 - 16, y: 16 * float64(i)})
 	}
 	world.wallObjects = append(world.wallObjects, &Wall{x: 16 * 3, y: 640 - 16*3})
+
+	switchA := &Switch{x: 16 * 5, y: 640 - 16*2}
+	world.switchObjects = append(world.switchObjects, switchA)
+
+	world.wallObjects = append(world.wallObjects, switchA)
+	world.wallObjects = append(world.wallObjects, &Wall{x: 16 * 6, y: 640 - 16*3, wallSwitch: switchA})
+
+	keyA := &Key{x: 16 * 7, y: 640 - 16*2, originX: 16 * 7, originY: 640 - 16*2, active: true}
+	world.wallObjects = append(world.wallObjects, keyA)
+	world.keyList = append(world.keyList, keyA)
 
 	return world
 }
@@ -56,7 +70,9 @@ func UpdateWorld(world *World) {
 		}
 	}
 	for _, object := range world.wallObjects {
-		object.Update(world, world.keys)
+		if object.Active() {
+			object.Update(world, world.keys)
+		}
 	}
 	for _, player := range world.players {
 		player.x = player.newX
@@ -69,7 +85,7 @@ func UpdateWorld(world *World) {
 		copy(keyRecordCopy, keyRecording)
 		keyRecording = [][]ebiten.Key{}
 
-		player := &Player{x: 16, y: 640 - 32, newX: 16, newY: 640 - 32, first: false, keyRecord: keyRecordCopy, active: true}
+		player := &Player{x: 16, y: 640 - 32, newX: 16, newY: 640 - 32, first: false, keyRecord: keyRecordCopy, active: true, letGoOfPickup: true}
 		world.players = append(world.players, player)
 		world.playerObjects = append(world.playerObjects, player)
 		shadowCounter++
@@ -82,6 +98,16 @@ func UpdateWorld(world *World) {
 			player.y = -32
 			player.newY = -32
 			player.active = false
+			player.carrying = nil
+			player.letGoOfPickup = true
+		}
+		for _, swtch := range world.switchObjects {
+			swtch.activated = false
+		}
+		for _, key := range world.keyList {
+			key.x = key.originX
+			key.y = key.originY
+			key.active = true
 		}
 	}
 
@@ -120,4 +146,5 @@ func DrawObjects(screen *ebiten.Image, world *World) {
 			screen.DrawImage(object.Image(), op)
 		}
 	}
+	ebitenutil.DebugPrint(screen, fmt.Sprintf("%t", world.players[0].carrying == nil))
 }
