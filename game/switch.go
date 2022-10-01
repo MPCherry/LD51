@@ -19,6 +19,7 @@ type Switch struct {
 	resets      bool
 	spriteIndex int
 	final       bool
+	cover       int
 }
 
 func (s *Switch) X() float64 {
@@ -42,9 +43,29 @@ func (s *Switch) Update(world *World, inputs []ebiten.Key) {
 		if math.Abs(s.y-player.newY) < 16 && math.Abs(s.x-player.newX) < 16 {
 			if s.key == nil {
 				s.activated = true
+				if s.cover != 0 {
+					switch s.cover {
+					case 2:
+						bottomCoverDraw = false
+					case 3:
+						middleCoverDraw = false
+					case 4:
+						rightCoverDraw = false
+					}
+				}
 			} else {
 				if player.carrying != nil && player.carrying == s.key {
 					s.activated = true
+					if s.cover != 0 {
+						switch s.cover {
+						case 2:
+							bottomCoverDraw = false
+						case 3:
+							middleCoverDraw = false
+						case 4:
+							rightCoverDraw = false
+						}
+					}
 					player.carrying = nil
 					s.key.active = false
 				}
