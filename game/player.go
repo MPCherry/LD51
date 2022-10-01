@@ -113,4 +113,14 @@ func (p *Player) Update(world *World, keys []ebiten.Key) {
 		p.carrying.x = p.x
 		p.carrying.y = p.y
 	}
+
+	for _, shadow := range world.players {
+		if p == shadow {
+			continue
+		}
+
+		if math.Abs(shadow.y-p.newY) < 16 && math.Abs(shadow.x-p.newX) < 16 {
+			gameover = true
+		}
+	}
 }
