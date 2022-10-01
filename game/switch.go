@@ -31,7 +31,7 @@ func (s *Switch) Image() *ebiten.Image {
 }
 
 func (s *Switch) Active() bool {
-	return true
+	return !s.activated
 }
 
 func (s *Switch) Update(world *World, inputs []ebiten.Key) {

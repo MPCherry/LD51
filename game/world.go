@@ -1,9 +1,11 @@
 package game
 
 import (
+	"fmt"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
@@ -26,7 +28,7 @@ type World struct {
 
 func NewWorld() *World {
 	world := &World{}
-	player := &Player{x: 16, y: 640 - 32, newX: 16, newY: 640 - 32, first: true, active: true, letGoOfPickup: true}
+	player := &Player{x: 16 * 5, y: 640 - 32, newX: 16 * 5, newY: 640 - 32, first: true, active: true, letGoOfPickup: true}
 	world.players = append(world.players, player)
 	world.playerObjects = append(world.playerObjects, player)
 	for i := 0; i < 60; i++ {
@@ -37,21 +39,41 @@ func NewWorld() *World {
 		world.wallObjects = append(world.wallObjects, &Wall{x: 0, y: 16 * float64(i)})
 		world.wallObjects = append(world.wallObjects, &Wall{x: 960 - 16, y: 16 * float64(i)})
 	}
-	world.wallObjects = append(world.wallObjects, &Wall{x: 16 * 3, y: 640 - 16*3})
 
-	keyA := &Key{x: 16 * 7, y: 640 - 16*2, originX: 16 * 7, originY: 640 - 16*2, active: true}
-	world.wallObjects = append(world.wallObjects, keyA)
-	world.keyList = append(world.keyList, keyA)
-	switchA := &Switch{x: 16 * 5, y: 640 - 16*2, key: keyA}
-	world.switchObjects = append(world.switchObjects, switchA)
+	// Make the map
+	for i := 1; i < 59; i++ {
+		world.wallObjects = append(world.wallObjects, &Wall{x: 16 * float64(i), y: 640 - 16*7})
+		world.wallObjects = append(world.wallObjects, &Wall{x: 16 * float64(i), y: 16 * 8})
+	}
 
-	world.wallObjects = append(world.wallObjects, switchA)
-	world.wallObjects = append(world.wallObjects, &Wall{x: 16 * 6, y: 640 - 16*3, wallSwitch: switchA})
+	tele0D := &Teleporter{x: 16 * 3, y: 16 * 3, spriteIndex: 0}
+	tele0S := &Teleporter{x: 16 * 3, y: 640 - 32, destination: tele0D, spriteIndex: 0}
+	world.wallObjects = append(world.wallObjects, tele0D)
+	world.wallObjects = append(world.wallObjects, tele0S)
 
-	teleB := &Teleporter{x: 16 * 8, y: 16 * 1}
-	teleA := &Teleporter{x: 16 * 8, y: 640 - 16*2, destination: teleB}
-	world.wallObjects = append(world.wallObjects, teleA)
-	world.wallObjects = append(world.wallObjects, teleB)
+	key0 := &Key{x: 960 - 16*20, y: 16 * 7, originX: 960 - 16*20, originY: 16 * 7, active: true, spriteIndex: 0}
+	world.keyList = append(world.keyList, key0)
+	world.wallObjects = append(world.wallObjects, key0)
+
+	swtch0 := &Switch{x: 16 * 3, y: 16 * 7, key: key0, spriteIndex: 0}
+	world.switchObjects = append(world.switchObjects, swtch0)
+	world.wallObjects = append(world.wallObjects, swtch0)
+
+	// world.wallObjects = append(world.wallObjects, &Wall{x: 16 * 3, y: 640 - 16*3})
+
+	// keyA := &Key{x: 16 * 7, y: 640 - 16*2, originX: 16 * 7, originY: 640 - 16*2, active: true}
+	// world.wallObjects = append(world.wallObjects, keyA)
+	// world.keyList = append(world.keyList, keyA)
+	// switchA := &Switch{x: 16 * 5, y: 640 - 16*2, key: keyA}
+	// world.switchObjects = append(world.switchObjects, switchA)
+
+	// world.wallObjects = append(world.wallObjects, switchA)
+	// world.wallObjects = append(world.wallObjects, &Wall{x: 16 * 6, y: 640 - 16*3, wallSwitch: switchA})
+
+	// teleB := &Teleporter{x: 16 * 8, y: 16 * 1}
+	// teleA := &Teleporter{x: 16 * 8, y: 640 - 16*2, destination: teleB}
+	// world.wallObjects = append(world.wallObjects, teleA)
+	// world.wallObjects = append(world.wallObjects, teleB)
 
 	return world
 }
@@ -84,12 +106,12 @@ func UpdateWorld(world *World) {
 	}
 
 	recordCounter++
-	if recordCounter%300 == 0 {
+	if recordCounter%600 == 0 {
 		keyRecordCopy := make([][]ebiten.Key, len(keyRecording))
 		copy(keyRecordCopy, keyRecording)
 		keyRecording = [][]ebiten.Key{}
 
-		player := &Player{x: 16, y: 640 - 32, newX: 16, newY: 640 - 32, first: false, keyRecord: keyRecordCopy, active: true, letGoOfPickup: true}
+		player := &Player{x: 16 * 5, y: 640 - 32, newX: 16 * 5, newY: 640 - 32, first: false, keyRecord: keyRecordCopy, active: true, letGoOfPickup: true}
 		world.players = append(world.players, player)
 		world.playerObjects = append(world.playerObjects, player)
 		shadowCounter++
@@ -118,8 +140,8 @@ func UpdateWorld(world *World) {
 	if respawning {
 		if respawning && respawnCounter%60 == 0 {
 			if respawnShadowCounter == len(world.players)-1 {
-				world.players[0].x = 16
-				world.players[0].newX = 16
+				world.players[0].x = 16 * 5
+				world.players[0].newX = 16 * 5
 				world.players[0].y = 640 - 32
 				world.players[0].newY = 640 - 32
 				world.players[0].jumped = false
@@ -127,8 +149,8 @@ func UpdateWorld(world *World) {
 				respawning = false
 				recordCounter = 0
 			} else {
-				world.players[1+respawnShadowCounter].x = 16
-				world.players[1+respawnShadowCounter].newX = 16
+				world.players[1+respawnShadowCounter].x = 16 * 5
+				world.players[1+respawnShadowCounter].newX = 16 * 5
 				world.players[1+respawnShadowCounter].y = 640 - 32
 				world.players[1+respawnShadowCounter].newY = 640 - 32
 				world.players[1+respawnShadowCounter].jumped = false
@@ -150,5 +172,5 @@ func DrawObjects(screen *ebiten.Image, world *World) {
 			screen.DrawImage(object.Image(), op)
 		}
 	}
-	// ebitenutil.DebugPrint(screen, fmt.Sprintf("%t", world.players[0].carrying == nil))
+	ebitenutil.DebugPrint(screen, fmt.Sprintf("%d", recordCounter))
 }

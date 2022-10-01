@@ -13,7 +13,7 @@ var keyRecording = [][]ebiten.Key{}
 
 const (
 	runSpeed   = 2
-	jumpHeight = 5
+	jumpHeight = 6
 )
 
 type Player struct {
@@ -93,7 +93,7 @@ func (p *Player) Update(world *World, keys []ebiten.Key) {
 
 	p.newY = p.y + p.verticalSpeed
 	if p.verticalSpeed < 3 {
-		p.verticalSpeed += 0.2
+		p.verticalSpeed += 0.3
 	}
 
 	for _, key := range world.keyList {
