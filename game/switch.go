@@ -44,6 +44,8 @@ func (s *Switch) Update(world *World, inputs []ebiten.Key) {
 		if math.Abs(s.y-player.newY) < 16 && math.Abs(s.x-player.newX) < 16 {
 			if s.key == nil {
 				s.activated = true
+				switchSound.Rewind()
+				switchSound.Play()
 				if s.cover != 0 {
 					switch s.cover {
 					case 2:
@@ -57,6 +59,8 @@ func (s *Switch) Update(world *World, inputs []ebiten.Key) {
 			} else {
 				if player.carrying != nil && player.carrying == s.key {
 					s.activated = true
+					switchSound.Rewind()
+					switchSound.Play()
 					if s.cover != 0 {
 						switch s.cover {
 						case 2:
@@ -75,6 +79,8 @@ func (s *Switch) Update(world *World, inputs []ebiten.Key) {
 			if s.final {
 				gameover = true
 				goCause = "win"
+				winSound.Rewind()
+				winSound.Play()
 				fmt.Println("Won")
 			}
 		}

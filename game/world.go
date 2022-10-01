@@ -1,10 +1,13 @@
 package game
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/audio"
+	"github.com/hajimehoshi/ebiten/v2/audio/wav"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
@@ -28,6 +31,9 @@ type World struct {
 
 func NewWorld() *World {
 	world := &World{}
+
+	initSounds()
+
 	player := &Player{x: 16 * 5, y: 640 - 32, newX: 16 * 5, newY: 640 - 32, first: true, active: true, letGoOfPickup: true}
 	world.players = append(world.players, player)
 	world.playerObjects = append(world.playerObjects, player)
@@ -353,7 +359,7 @@ func UpdateWorld(world *World) {
 			key.y = key.originY
 			key.active = true
 		}
-		respawning = true
+		respawning = false
 		respawnShadowCounter = 0
 		respawnCounter = 0
 		keyRecording = [][]ebiten.Key{}
@@ -385,6 +391,8 @@ func UpdateWorld(world *World) {
 			fmt.Println("Starting game")
 			starting = false
 			firstTime = false
+			startSound.Rewind()
+			startSound.Play()
 		}
 		return
 	}
@@ -410,15 +418,19 @@ func UpdateWorld(world *World) {
 	if recordCounter%600 == 0 && !respawning {
 		interluding = true
 		interludeCounter = 0
+		timeUp.Rewind()
+		timeUp.Play()
 	}
 	if interluding {
 		interludeCounter++
-		if interludeCounter == 60 {
+		if interludeCounter == 120 {
 			interluding = false
 			if world.players[0].carrying != nil {
 				gameover = true
 				goCause = "key"
 				fmt.Println("gameover, carrying key")
+				lostSound.Rewind()
+				lostSound.Play()
 				return
 			}
 			keyRecordCopy := make([][]ebiten.Key, len(keyRecording))
@@ -465,6 +477,8 @@ func UpdateWorld(world *World) {
 				world.players[0].active = true
 				respawning = false
 				recordCounter = 0
+				playerSpawn.Rewind()
+				playerSpawn.Play()
 			} else {
 				world.players[1+respawnShadowCounter].x = 16 * 5
 				world.players[1+respawnShadowCounter].newX = 16 * 5
@@ -474,6 +488,8 @@ func UpdateWorld(world *World) {
 				world.players[1+respawnShadowCounter].keyIndex = 0
 				world.players[1+respawnShadowCounter].active = true
 				respawnShadowCounter++
+				ghostSpawn.Rewind()
+				ghostSpawn.Play()
 			}
 		}
 		respawnCounter++
@@ -536,4 +552,63 @@ func DrawObjects(screen *ebiten.Image, world *World) {
 		}
 	}
 	// ebitenutil.DebugPrint(screen, fmt.Sprintf("%d", recordCounter))
+}
+
+var audioContext = audio.NewContext(48000)
+var jump *audio.Player
+var keyUp *audio.Player
+var keyDown *audio.Player
+var teleportSound *audio.Player
+var playerSpawn *audio.Player
+var ghostSpawn *audio.Player
+var startSound *audio.Player
+var timeUp *audio.Player
+var switchSound *audio.Player
+var winSound *audio.Player
+var lostSound *audio.Player
+
+func initSounds() {
+	dat, _ := os.ReadFile("resources/sounds/jump.wav")
+	d, _ := wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	jump, _ = audioContext.NewPlayer(d)
+
+	dat, _ = os.ReadFile("resources/sounds/keypickup.wav")
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	keyUp, _ = audioContext.NewPlayer(d)
+
+	dat, _ = os.ReadFile("resources/sounds/key_down.wav")
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	keyDown, _ = audioContext.NewPlayer(d)
+
+	dat, _ = os.ReadFile("resources/sounds/teleport.wav")
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	teleportSound, _ = audioContext.NewPlayer(d)
+
+	dat, _ = os.ReadFile("resources/sounds/playerspawn.wav")
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	playerSpawn, _ = audioContext.NewPlayer(d)
+
+	dat, _ = os.ReadFile("resources/sounds/ghostspawn.wav")
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	ghostSpawn, _ = audioContext.NewPlayer(d)
+
+	dat, _ = os.ReadFile("resources/sounds/start.wav")
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	startSound, _ = audioContext.NewPlayer(d)
+
+	dat, _ = os.ReadFile("resources/sounds/timesup.wav")
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	timeUp, _ = audioContext.NewPlayer(d)
+
+	dat, _ = os.ReadFile("resources/sounds/switch.wav")
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	switchSound, _ = audioContext.NewPlayer(d)
+
+	dat, _ = os.ReadFile("resources/sounds/win.wav")
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	winSound, _ = audioContext.NewPlayer(d)
+
+	dat, _ = os.ReadFile("resources/sounds/lost.wav")
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	lostSound, _ = audioContext.NewPlayer(d)
 }

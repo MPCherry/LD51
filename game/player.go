@@ -115,12 +115,20 @@ func (p *Player) Update(world *World, keys []ebiten.Key) {
 			if !p.jumped {
 				p.verticalSpeed = -jumpHeight
 				p.jumped = true
+				if p.first {
+					jump.Rewind()
+					jump.Play()
+				}
 			}
 		case ebiten.KeyDown:
 			if p.letGoOfPickup {
 				if p.carrying != nil && !p.jumped {
 					p.carrying = nil
 					p.letGoOfPickup = false
+					if p.first {
+						keyDown.Rewind()
+						keyDown.Play()
+					}
 				}
 			}
 			sawDown = true
@@ -142,6 +150,10 @@ func (p *Player) Update(world *World, keys []ebiten.Key) {
 					if k == ebiten.KeyDown && p.letGoOfPickup {
 						p.carrying = key
 						p.letGoOfPickup = false
+						if p.first {
+							keyUp.Rewind()
+							keyUp.Play()
+						}
 					}
 				}
 			}
@@ -162,6 +174,8 @@ func (p *Player) Update(world *World, keys []ebiten.Key) {
 			gameover = true
 			goCause = "collision"
 			fmt.Println("gameover, collision")
+			lostSound.Rewind()
+			lostSound.Play()
 		}
 	}
 }

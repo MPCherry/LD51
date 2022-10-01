@@ -41,6 +41,10 @@ func (t *Teleporter) Update(world *World, inputs []ebiten.Key) {
 			if math.Abs(t.y-player.newY) < 16 && math.Abs(t.x-player.newX) < 16 {
 				player.newX = t.destination.x
 				player.newY = t.destination.y
+				if player.first {
+					teleportSound.Rewind()
+					teleportSound.Play()
+				}
 			}
 		}
 	}
