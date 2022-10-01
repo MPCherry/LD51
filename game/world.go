@@ -2,7 +2,6 @@ package game
 
 import (
 	"fmt"
-	"image/color"
 	"os"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -482,8 +481,12 @@ var middleCoverDraw = true
 var rightCover, _, _ = ebitenutil.NewImageFromFile("resources/righ_cover.png")
 var rightCoverDraw = true
 
+var bg, _, _ = ebitenutil.NewImageFromFile("resources/bg.png")
+var fg, _, _ = ebitenutil.NewImageFromFile("resources/fg.png")
+
 func DrawObjects(screen *ebiten.Image, world *World) {
-	screen.Fill(color.White)
+	op := &ebiten.DrawImageOptions{}
+	screen.DrawImage(bg, op)
 	for _, object := range append(world.playerObjects, world.wallObjects...) {
 		if object.Active() {
 			op := &ebiten.DrawImageOptions{}
@@ -491,6 +494,9 @@ func DrawObjects(screen *ebiten.Image, world *World) {
 			screen.DrawImage(object.Image(), op)
 		}
 	}
+
+	op = &ebiten.DrawImageOptions{}
+	screen.DrawImage(fg, op)
 	if firstTime {
 		op := &ebiten.DrawImageOptions{}
 		screen.DrawImage(startScreen, op)
@@ -507,16 +513,16 @@ func DrawObjects(screen *ebiten.Image, world *World) {
 			screen.DrawImage(winScreen, op)
 		}
 	} else {
-		op := &ebiten.DrawImageOptions{}
-		if bottomCoverDraw {
-			screen.DrawImage(bottomCover, op)
-		}
-		if middleCoverDraw {
-			screen.DrawImage(middleCover, op)
-		}
-		if rightCoverDraw {
-			screen.DrawImage(rightCover, op)
-		}
+		// op := &ebiten.DrawImageOptions{}
+		// if bottomCoverDraw {
+		// 	screen.DrawImage(bottomCover, op)
+		// }
+		// if middleCoverDraw {
+		// 	screen.DrawImage(middleCover, op)
+		// }
+		// if rightCoverDraw {
+		// 	screen.DrawImage(rightCover, op)
+		// }
 	}
-	ebitenutil.DebugPrint(screen, fmt.Sprintf("%d", recordCounter))
+	// ebitenutil.DebugPrint(screen, fmt.Sprintf("%d", recordCounter))
 }
