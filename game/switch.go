@@ -52,6 +52,7 @@ func (s *Switch) Update(world *World, inputs []ebiten.Key) {
 
 			if s.final {
 				gameover = true
+				goCause = "win"
 				fmt.Println("Won")
 			}
 		}

@@ -320,6 +320,9 @@ var shadowCounter = 0
 var starting = true
 var canStart = true
 var gameover = false
+var goCause = ""
+
+var firstTime = true
 
 func UpdateWorld(world *World) {
 	world.keys = inpututil.AppendPressedKeys(world.keys[:0])
@@ -371,6 +374,7 @@ func UpdateWorld(world *World) {
 		if len(world.keys) > 0 && canStart {
 			fmt.Println("Starting game")
 			starting = false
+			firstTime = false
 		}
 		return
 	}
@@ -396,6 +400,7 @@ func UpdateWorld(world *World) {
 	if recordCounter%600 == 0 && !respawning {
 		if world.players[0].carrying != nil {
 			gameover = true
+			goCause = "key"
 			fmt.Println("gameover, carrying key")
 			return
 		}
@@ -457,6 +462,11 @@ func UpdateWorld(world *World) {
 	}
 }
 
+var startScreen, _, _ = ebitenutil.NewImageFromFile("resources/start.png")
+var collisionScreen, _, _ = ebitenutil.NewImageFromFile("resources/collision.png")
+var keyScreen, _, _ = ebitenutil.NewImageFromFile("resources/key.png")
+var winScreen, _, _ = ebitenutil.NewImageFromFile("resources/win.png")
+
 func DrawObjects(screen *ebiten.Image, world *World) {
 	screen.Fill(color.White)
 	for _, object := range append(world.playerObjects, world.wallObjects...) {
@@ -464,6 +474,22 @@ func DrawObjects(screen *ebiten.Image, world *World) {
 			op := &ebiten.DrawImageOptions{}
 			op.GeoM.Translate(object.X(), object.Y())
 			screen.DrawImage(object.Image(), op)
+		}
+	}
+	if firstTime {
+		op := &ebiten.DrawImageOptions{}
+		screen.DrawImage(startScreen, op)
+	} else if gameover {
+		switch goCause {
+		case "collision":
+			op := &ebiten.DrawImageOptions{}
+			screen.DrawImage(collisionScreen, op)
+		case "key":
+			op := &ebiten.DrawImageOptions{}
+			screen.DrawImage(keyScreen, op)
+		case "win":
+			op := &ebiten.DrawImageOptions{}
+			screen.DrawImage(winScreen, op)
 		}
 	}
 	ebitenutil.DebugPrint(screen, fmt.Sprintf("%d", recordCounter))
