@@ -136,7 +136,7 @@ func NewWorld() *World {
 	world.switchObjects = append(world.switchObjects, swtch1)
 	world.wallObjects = append(world.wallObjects, swtch1)
 
-	swtch2 := &Switch{x: 16 * 3, y: 16 * 12, key: key2, spriteIndex: 2, resets: false}
+	swtch2 := &Switch{x: 16 * 4, y: 16 * 12, key: key2, spriteIndex: 2, resets: false}
 	world.switchObjects = append(world.switchObjects, swtch2)
 	world.wallObjects = append(world.wallObjects, swtch2)
 
@@ -308,7 +308,7 @@ func UpdateWorld(world *World) {
 	}
 
 	recordCounter++
-	if recordCounter%600 == 0 {
+	if recordCounter%600 == 0 && !respawning {
 		keyRecordCopy := make([][]ebiten.Key, len(keyRecording))
 		copy(keyRecordCopy, keyRecording)
 		keyRecording = [][]ebiten.Key{}

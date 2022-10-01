@@ -12,7 +12,7 @@ var spritePlayer, _, _ = ebitenutil.NewImageFromFile("resources/small_black_squa
 var keyRecording = [][]ebiten.Key{}
 
 const (
-	runSpeed   = 2.2
+	runSpeed   = 2
 	jumpHeight = 6
 )
 
