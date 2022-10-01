@@ -40,6 +40,8 @@ func (s *Switch) Update(world *World, inputs []ebiten.Key) {
 			} else {
 				if player.carrying != nil && player.carrying == s.key {
 					s.activated = true
+					player.carrying = nil
+					s.key.active = false
 				}
 			}
 		}

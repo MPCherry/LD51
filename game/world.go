@@ -41,15 +41,14 @@ func NewWorld() *World {
 	}
 	world.wallObjects = append(world.wallObjects, &Wall{x: 16 * 3, y: 640 - 16*3})
 
-	switchA := &Switch{x: 16 * 5, y: 640 - 16*2}
+	keyA := &Key{x: 16 * 7, y: 640 - 16*2, originX: 16 * 7, originY: 640 - 16*2, active: true}
+	world.wallObjects = append(world.wallObjects, keyA)
+	world.keyList = append(world.keyList, keyA)
+	switchA := &Switch{x: 16 * 5, y: 640 - 16*2, key: keyA}
 	world.switchObjects = append(world.switchObjects, switchA)
 
 	world.wallObjects = append(world.wallObjects, switchA)
 	world.wallObjects = append(world.wallObjects, &Wall{x: 16 * 6, y: 640 - 16*3, wallSwitch: switchA})
-
-	keyA := &Key{x: 16 * 7, y: 640 - 16*2, originX: 16 * 7, originY: 640 - 16*2, active: true}
-	world.wallObjects = append(world.wallObjects, keyA)
-	world.keyList = append(world.keyList, keyA)
 
 	return world
 }
