@@ -378,6 +378,7 @@ func UpdateWorld(world *World) {
 		world.players[0].y = 640 - 32
 		world.players[0].newY = 640 - 32
 		world.players[0].jumped = false
+		world.players[0].verticalSpeed = 0
 		world.players[0].active = true
 		player.carrying = nil
 		player.letGoOfPickup = true
@@ -474,6 +475,7 @@ func UpdateWorld(world *World) {
 				world.players[0].y = 640 - 32
 				world.players[0].newY = 640 - 32
 				world.players[0].jumped = false
+				world.players[0].verticalSpeed = 0
 				world.players[0].active = true
 				respawning = false
 				recordCounter = 0
@@ -486,6 +488,7 @@ func UpdateWorld(world *World) {
 				world.players[1+respawnShadowCounter].newY = 640 - 32
 				world.players[1+respawnShadowCounter].jumped = false
 				world.players[1+respawnShadowCounter].keyIndex = 0
+				world.players[1+respawnShadowCounter].verticalSpeed = 0
 				world.players[1+respawnShadowCounter].active = true
 				respawnShadowCounter++
 				ghostSpawn.Rewind()
