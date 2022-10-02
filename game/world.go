@@ -3,6 +3,7 @@ package game
 import (
 	"bytes"
 	"fmt"
+	"math/rand"
 	"os"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -326,14 +327,15 @@ var interludeCounter = 0
 
 var shadowCounter = 0
 
-var starting = true
-var canStart = true
-var gameover = false
-var goCause = ""
-
-var firstTime = true
+var starting = false
+var canStart = false
+var gameover = true
+var goCause = "start"
 
 func UpdateWorld(world *World) {
+	if gameover {
+		stopMusic()
+	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		os.Exit(0)
 	}
@@ -342,7 +344,8 @@ func UpdateWorld(world *World) {
 	if inpututil.IsKeyJustReleased(ebiten.KeyR) {
 		canStart = true
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyR) {
+	if inpututil.IsKeyJustPressed(ebiten.KeyR) && !interluding {
+		stopMusic()
 		canStart = false
 		fmt.Println("Resetting game over")
 		gameover = false
@@ -391,9 +394,9 @@ func UpdateWorld(world *World) {
 		if len(world.keys) > 0 && canStart {
 			fmt.Println("Starting game")
 			starting = false
-			firstTime = false
 			startSound.Rewind()
 			startSound.Play()
+			playMusic()
 		}
 		return
 	}
@@ -481,6 +484,7 @@ func UpdateWorld(world *World) {
 				recordCounter = 0
 				playerSpawn.Rewind()
 				playerSpawn.Play()
+				playMusic()
 			} else {
 				world.players[1+respawnShadowCounter].x = 16 * 5
 				world.players[1+respawnShadowCounter].newX = 16 * 5
@@ -527,11 +531,11 @@ func DrawObjects(screen *ebiten.Image, world *World) {
 
 	op = &ebiten.DrawImageOptions{}
 	screen.DrawImage(fg, op)
-	if firstTime {
-		op := &ebiten.DrawImageOptions{}
-		screen.DrawImage(startScreen, op)
-	} else if gameover {
+	if gameover {
 		switch goCause {
+		case "start":
+			op := &ebiten.DrawImageOptions{}
+			screen.DrawImage(startScreen, op)
 		case "collision":
 			op := &ebiten.DrawImageOptions{}
 			screen.DrawImage(collisionScreen, op)
@@ -554,7 +558,7 @@ func DrawObjects(screen *ebiten.Image, world *World) {
 			screen.DrawImage(rightCover, op)
 		}
 	}
-	// ebitenutil.DebugPrint(screen, fmt.Sprintf("%d", recordCounter))
+	// ebitenutil.DebugPrint(screen, fmt.Sprintf("%d", len(world.players)))
 }
 
 var audioContext = audio.NewContext(48000)
@@ -569,6 +573,8 @@ var timeUp *audio.Player
 var switchSound *audio.Player
 var winSound *audio.Player
 var lostSound *audio.Player
+var song1 *audio.Player
+var song2 *audio.Player
 
 func initSounds() {
 	dat, _ := os.ReadFile("resources/sounds/jump.wav")
@@ -614,4 +620,29 @@ func initSounds() {
 	dat, _ = os.ReadFile("resources/sounds/lost.wav")
 	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
 	lostSound, _ = audioContext.NewPlayer(d)
+
+	dat, _ = os.ReadFile("resources/sounds/song1.wav")
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	song1, _ = audioContext.NewPlayer(d)
+
+	dat, _ = os.ReadFile("resources/sounds/song2.wav")
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	song2, _ = audioContext.NewPlayer(d)
+}
+
+func playMusic() {
+	song := rand.Intn(2)
+	switch song {
+	case 0:
+		song1.Rewind()
+		song1.Play()
+	case 1:
+		song2.Rewind()
+		song2.Play()
+	}
+}
+
+func stopMusic() {
+	song1.Pause()
+	song2.Pause()
 }
