@@ -6,6 +6,8 @@ import (
 	"math/rand"
 	"os"
 
+	resources "test/resources/sounds"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/audio"
 	"github.com/hajimehoshi/ebiten/v2/audio/wav"
@@ -619,64 +621,54 @@ var song3 *audio.Player
 var song4 *audio.Player
 
 func initSounds() {
-	dat, _ := os.ReadFile("resources/sounds/jump.wav")
-	d, _ := wav.DecodeWithoutResampling(bytes.NewReader(dat))
+
+	// dat, err := os.ReadFile("resources/sounds/jump.wav")
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
+	d, _ := wav.DecodeWithoutResampling(bytes.NewReader(resources.Jump_wav))
 	jump, _ = audioContext.NewPlayer(d)
 
-	dat, _ = os.ReadFile("resources/sounds/keypickup.wav")
-	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(resources.KeyUp_wav))
 	keyUp, _ = audioContext.NewPlayer(d)
 
-	dat, _ = os.ReadFile("resources/sounds/key_down.wav")
-	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(resources.KeyDown_wav))
 	keyDown, _ = audioContext.NewPlayer(d)
 
-	dat, _ = os.ReadFile("resources/sounds/teleport.wav")
-	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(resources.Teleport_wav))
 	teleportSound, _ = audioContext.NewPlayer(d)
 
-	dat, _ = os.ReadFile("resources/sounds/playerspawn.wav")
-	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(resources.PlayerSpawn_wav))
 	playerSpawn, _ = audioContext.NewPlayer(d)
 
-	dat, _ = os.ReadFile("resources/sounds/ghostspawn.wav")
-	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(resources.GhostSpawn_wav))
 	ghostSpawn, _ = audioContext.NewPlayer(d)
 
-	dat, _ = os.ReadFile("resources/sounds/start.wav")
-	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(resources.Start_wav))
 	startSound, _ = audioContext.NewPlayer(d)
 
-	dat, _ = os.ReadFile("resources/sounds/timesup.wav")
-	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(resources.TimesUp_wav))
 	timeUp, _ = audioContext.NewPlayer(d)
 
-	dat, _ = os.ReadFile("resources/sounds/switch.wav")
-	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(resources.Switch_wav))
 	switchSound, _ = audioContext.NewPlayer(d)
 
-	dat, _ = os.ReadFile("resources/sounds/win.wav")
-	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(resources.Win_wav))
 	winSound, _ = audioContext.NewPlayer(d)
 
-	dat, _ = os.ReadFile("resources/sounds/lost.wav")
-	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(resources.Lost_wav))
 	lostSound, _ = audioContext.NewPlayer(d)
 
-	dat, _ = os.ReadFile("resources/sounds/song1.wav")
-	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(resources.Song1_wav))
 	song1, _ = audioContext.NewPlayer(d)
 
-	dat, _ = os.ReadFile("resources/sounds/song2.wav")
-	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(resources.Song2_wav))
 	song2, _ = audioContext.NewPlayer(d)
 
-	dat, _ = os.ReadFile("resources/sounds/song3.wav")
-	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(resources.Song3_wav))
 	song3, _ = audioContext.NewPlayer(d)
 
-	dat, _ = os.ReadFile("resources/sounds/song4.wav")
-	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(resources.Song4_wav))
 	song4, _ = audioContext.NewPlayer(d)
 
 	song1.SetVolume(0.5)
@@ -689,10 +681,10 @@ func initSounds() {
 var lastPlayed = 0
 
 func playMusic() {
-	song := rand.Intn(4)
-	for song == lastPlayed {
-		song = rand.Intn(4)
-	}
+	song := rand.Intn(1)
+	// for song == lastPlayed {
+	// 	song = rand.Intn(4)
+	// }
 	lastPlayed = song
 	switch song {
 	case 0:
