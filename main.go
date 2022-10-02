@@ -42,7 +42,7 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 
 func main() {
 	ebiten.SetWindowSize(windowWidth, windowHeight)
-	ebiten.SetWindowTitle("Hello, World!")
+	ebiten.SetWindowTitle("History Repeats")
 	ebiten.SetTPS(60)
 	if err := ebiten.RunGame(newGame()); err != nil {
 		log.Fatal(err)

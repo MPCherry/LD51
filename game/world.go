@@ -638,6 +638,11 @@ func initSounds() {
 	dat, _ = os.ReadFile("resources/sounds/song4.wav")
 	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
 	song4, _ = audioContext.NewPlayer(d)
+
+	song1.SetVolume(0.5)
+	song2.SetVolume(0.5)
+	song3.SetVolume(0.5)
+	song4.SetVolume(0.5)
 }
 
 var lastPlayed = 0
