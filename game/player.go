@@ -175,14 +175,14 @@ func (p *Player) Update(world *World, keys []ebiten.Key) {
 	}
 
 	if !p.first {
-		if p.keyIndex < 600 {
-			if math.Abs(p.newX-p.xRecord[p.keyIndex]) > 64 {
-				p.newX = p.xRecord[p.keyIndex]
-			}
-			if math.Abs(p.newY-p.yRecord[p.keyIndex]) > 64 {
-				p.newY = p.yRecord[p.keyIndex]
-			}
-		}
+		// if p.keyIndex < 600 {
+		// 	if math.Abs(p.newX-p.xRecord[p.keyIndex]) > 64 {
+		// 		p.newX = p.xRecord[p.keyIndex]
+		// 	}
+		// 	if math.Abs(p.newY-p.yRecord[p.keyIndex]) > 64 {
+		// 		p.newY = p.yRecord[p.keyIndex]
+		// 	}
+		// }
 
 		for _, shadow := range world.players {
 			if p == shadow {
