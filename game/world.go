@@ -333,6 +333,12 @@ var gameover = true
 var goCause = "start"
 
 func UpdateWorld(world *World) {
+	if shaking {
+		shakeCounter--
+		if shakeCounter == 0 {
+			shaking = false
+		}
+	}
 	if gameover {
 		stopMusic()
 	}
@@ -366,6 +372,8 @@ func UpdateWorld(world *World) {
 		respawnShadowCounter = 0
 		respawnCounter = 0
 		keyRecording = [][]ebiten.Key{}
+		xRecording = []float64{}
+		yRecording = []float64{}
 		recordCounter = 0
 
 		for _, player := range world.players {
@@ -431,6 +439,8 @@ func UpdateWorld(world *World) {
 			interluding = false
 			if world.players[0].carrying != nil {
 				gameover = true
+				shaking = true
+				shakeCounter = 120
 				goCause = "key"
 				fmt.Println("gameover, carrying key")
 				lostSound.Rewind()
@@ -438,10 +448,16 @@ func UpdateWorld(world *World) {
 				return
 			}
 			keyRecordCopy := make([][]ebiten.Key, len(keyRecording))
+			xRecordCopy := make([]float64, len(xRecording))
+			yRecordCopy := make([]float64, len(yRecording))
 			copy(keyRecordCopy, keyRecording)
+			copy(xRecordCopy, xRecording)
+			copy(yRecordCopy, yRecording)
 			keyRecording = [][]ebiten.Key{}
+			xRecording = []float64{}
+			yRecording = []float64{}
 
-			player := &Player{x: 16 * 5, y: 640 - 32, newX: 16 * 5, newY: 640 - 32, first: false, keyRecord: keyRecordCopy, active: true, letGoOfPickup: true}
+			player := &Player{x: 16 * 5, y: 640 - 32, newX: 16 * 5, newY: 640 - 32, first: false, keyRecord: keyRecordCopy, xRecord: xRecordCopy, yRecord: yRecordCopy, active: true, letGoOfPickup: true}
 			world.players = append(world.players, player)
 			world.playerObjects = append(world.playerObjects, player)
 			shadowCounter++
@@ -484,6 +500,8 @@ func UpdateWorld(world *World) {
 				recordCounter = 0
 				playerSpawn.Rewind()
 				playerSpawn.Play()
+				shaking = true
+				shakeCounter = 5
 				playMusic()
 			} else {
 				world.players[1+respawnShadowCounter].x = 16 * 5
@@ -494,6 +512,8 @@ func UpdateWorld(world *World) {
 				world.players[1+respawnShadowCounter].keyIndex = 0
 				world.players[1+respawnShadowCounter].verticalSpeed = 0
 				world.players[1+respawnShadowCounter].active = true
+				shaking = true
+				shakeCounter = 5
 				respawnShadowCounter++
 				ghostSpawn.Rewind()
 				ghostSpawn.Play()
@@ -501,6 +521,7 @@ func UpdateWorld(world *World) {
 		}
 		respawnCounter++
 	}
+
 }
 
 var startScreen, _, _ = ebitenutil.NewImageFromFile("resources/start.png")
@@ -518,13 +539,22 @@ var rightCoverDraw = true
 var bg, _, _ = ebitenutil.NewImageFromFile("resources/bg.png")
 var fg, _, _ = ebitenutil.NewImageFromFile("resources/fg.png")
 
+var shaking = true
+var shakeCounter = 30
+
 func DrawObjects(screen *ebiten.Image, world *World) {
 	op := &ebiten.DrawImageOptions{}
 	screen.DrawImage(bg, op)
+	offsetX := rand.Intn(4)
+	offsetY := rand.Intn(4)
 	for _, object := range append(world.playerObjects, world.wallObjects...) {
 		if object.Active() {
 			op := &ebiten.DrawImageOptions{}
-			op.GeoM.Translate(object.X(), object.Y())
+			if shaking {
+				op.GeoM.Translate(object.X()+float64(offsetX), object.Y()+float64(offsetY))
+			} else {
+				op.GeoM.Translate(object.X(), object.Y())
+			}
 			screen.DrawImage(object.Image(), op)
 		}
 	}
@@ -643,6 +673,7 @@ func initSounds() {
 	song2.SetVolume(0.5)
 	song3.SetVolume(0.5)
 	song4.SetVolume(0.5)
+	jump.SetVolume(0.5)
 }
 
 var lastPlayed = 0

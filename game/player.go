@@ -18,6 +18,8 @@ var spriteGhostLeft, _, _ = ebitenutil.NewImageFromFile("resources/sprites/ghost
 var spriteGhostJump, _, _ = ebitenutil.NewImageFromFile("resources/sprites/ghostjump.png")
 var spriteGhostJumpLeft, _, _ = ebitenutil.NewImageFromFile("resources/sprites/ghostjumpleft.png")
 var keyRecording = [][]ebiten.Key{}
+var xRecording = []float64{}
+var yRecording = []float64{}
 
 const (
 	runSpeed   = 2
@@ -33,6 +35,8 @@ type Player struct {
 	verticalSpeed float64
 	jumped        bool
 	keyRecord     [][]ebiten.Key
+	xRecord       []float64
+	yRecord       []float64
 	keyIndex      int
 	active        bool
 	carrying      *Key
@@ -165,6 +169,20 @@ func (p *Player) Update(world *World, keys []ebiten.Key) {
 		p.carrying.y = p.y
 	}
 
+	if p.first {
+		xRecording = append(xRecording, p.newX)
+		yRecording = append(yRecording, p.newY)
+	}
+
+	if !p.first {
+		if math.Abs(p.newX-p.xRecord[p.keyIndex]) > 16 {
+			p.newX = p.xRecord[p.keyIndex]
+		}
+		if math.Abs(p.newY-p.yRecord[p.keyIndex]) > 16 {
+			p.newY = p.yRecord[p.keyIndex]
+		}
+	}
+
 	for _, shadow := range world.players {
 		if p == shadow {
 			continue
@@ -172,6 +190,8 @@ func (p *Player) Update(world *World, keys []ebiten.Key) {
 
 		if math.Abs(shadow.y-p.newY) < 16 && math.Abs(shadow.x-p.newX) < 16 {
 			gameover = true
+			shaking = true
+			shakeCounter = 120
 			goCause = "collision"
 			fmt.Println("gameover, collision")
 			lostSound.Rewind()

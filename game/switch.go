@@ -46,6 +46,8 @@ func (s *Switch) Update(world *World, inputs []ebiten.Key) {
 				s.activated = true
 				switchSound.Rewind()
 				switchSound.Play()
+				shaking = true
+				shakeCounter = 30
 				if s.cover != 0 {
 					switch s.cover {
 					case 2:
@@ -61,6 +63,8 @@ func (s *Switch) Update(world *World, inputs []ebiten.Key) {
 					s.activated = true
 					switchSound.Rewind()
 					switchSound.Play()
+					shaking = true
+					shakeCounter = 30
 					if s.cover != 0 {
 						switch s.cover {
 						case 2:
@@ -78,6 +82,8 @@ func (s *Switch) Update(world *World, inputs []ebiten.Key) {
 
 			if s.final {
 				gameover = true
+				shaking = true
+				shakeCounter = 120
 				goCause = "win"
 				winSound.Rewind()
 				winSound.Play()

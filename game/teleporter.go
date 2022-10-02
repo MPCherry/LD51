@@ -44,6 +44,8 @@ func (t *Teleporter) Update(world *World, inputs []ebiten.Key) {
 				if player.first {
 					teleportSound.Rewind()
 					teleportSound.Play()
+					shaking = true
+					shakeCounter = 30
 				}
 			}
 		}
