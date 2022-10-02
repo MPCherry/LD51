@@ -681,10 +681,10 @@ func initSounds() {
 var lastPlayed = 0
 
 func playMusic() {
-	song := rand.Intn(1)
-	// for song == lastPlayed {
-	// 	song = rand.Intn(4)
-	// }
+	song := rand.Intn(4)
+	for song == lastPlayed {
+		song = rand.Intn(4)
+	}
 	lastPlayed = song
 	switch song {
 	case 0:
