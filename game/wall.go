@@ -62,3 +62,7 @@ func (w *Wall) Update(world *World, inputs []ebiten.Key) {
 		}
 	}
 }
+
+func (w *Wall) UpdateAnyway() {
+
+}

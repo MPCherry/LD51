@@ -92,3 +92,7 @@ func (s *Switch) Update(world *World, inputs []ebiten.Key) {
 		}
 	}
 }
+
+func (w *Switch) UpdateAnyway() {
+
+}

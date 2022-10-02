@@ -19,6 +19,7 @@ type Object interface {
 	Image() *ebiten.Image
 	Update(*World, []ebiten.Key)
 	Active() bool
+	UpdateAnyway()
 }
 
 type World struct {
@@ -333,6 +334,9 @@ var gameover = true
 var goCause = "start"
 
 func UpdateWorld(world *World) {
+	for _, object := range world.wallObjects {
+		object.UpdateAnyway()
+	}
 	if shaking {
 		shakeCounter--
 		if shakeCounter == 0 {
@@ -405,6 +409,7 @@ func UpdateWorld(world *World) {
 			startSound.Rewind()
 			startSound.Play()
 			playMusic()
+			// world.wallObjects = append(world.wallObjects, &Spawn{x: 16 * 5, y: 640 - 32, spriteIndex: 0, life: 12, active: true})
 		}
 		return
 	}
@@ -432,6 +437,9 @@ func UpdateWorld(world *World) {
 		interludeCounter = 0
 		timeUp.Rewind()
 		timeUp.Play()
+		for _, player := range world.players {
+			world.wallObjects = append(world.wallObjects, &Spawn{x: player.x, y: player.y, spriteIndex: 1, life: 120, active: true})
+		}
 	}
 	if interluding {
 		interludeCounter++
@@ -496,6 +504,7 @@ func UpdateWorld(world *World) {
 				world.players[0].jumped = false
 				world.players[0].verticalSpeed = 0
 				world.players[0].active = true
+				world.wallObjects = append(world.wallObjects, &Spawn{x: 16 * 5, y: 640 - 32, spriteIndex: 0, life: 12, active: true})
 				respawning = false
 				recordCounter = 0
 				playerSpawn.Rewind()
@@ -512,6 +521,7 @@ func UpdateWorld(world *World) {
 				world.players[1+respawnShadowCounter].keyIndex = 0
 				world.players[1+respawnShadowCounter].verticalSpeed = 0
 				world.players[1+respawnShadowCounter].active = true
+				world.wallObjects = append(world.wallObjects, &Spawn{x: 16 * 5, y: 640 - 32, spriteIndex: 1, life: 12, active: true})
 				shaking = true
 				shakeCounter = 5
 				respawnShadowCounter++

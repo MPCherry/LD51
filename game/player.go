@@ -175,11 +175,13 @@ func (p *Player) Update(world *World, keys []ebiten.Key) {
 	}
 
 	if !p.first {
-		if math.Abs(p.newX-p.xRecord[p.keyIndex]) > 16 {
-			p.newX = p.xRecord[p.keyIndex]
-		}
-		if math.Abs(p.newY-p.yRecord[p.keyIndex]) > 16 {
-			p.newY = p.yRecord[p.keyIndex]
+		if p.keyIndex < 600 {
+			if math.Abs(p.newX-p.xRecord[p.keyIndex]) > 64 {
+				p.newX = p.xRecord[p.keyIndex]
+			}
+			if math.Abs(p.newY-p.yRecord[p.keyIndex]) > 64 {
+				p.newY = p.yRecord[p.keyIndex]
+			}
 		}
 	}
 
@@ -198,4 +200,8 @@ func (p *Player) Update(world *World, keys []ebiten.Key) {
 			lostSound.Play()
 		}
 	}
+}
+
+func (w *Player) UpdateAnyway() {
+
 }

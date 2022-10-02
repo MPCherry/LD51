@@ -67,3 +67,7 @@ func (t *Teleporter) Update(world *World, inputs []ebiten.Key) {
 		t.frame = 2
 	}
 }
+
+func (w *Teleporter) UpdateAnyway() {
+
+}

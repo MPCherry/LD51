@@ -46,3 +46,7 @@ func (k *Key) Update(world *World, inputs []ebiten.Key) {
 		k.frame = 0
 	}
 }
+
+func (w *Key) UpdateAnyway() {
+
+}
