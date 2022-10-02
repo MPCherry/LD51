@@ -98,12 +98,12 @@ func (p *Player) Update(world *World, keys []ebiten.Key) {
 		copy(keyCopy, keys)
 		keyRecording = append(keyRecording, keyCopy)
 	} else {
-		p.keyIndex++
 		if p.keyIndex < len(p.keyRecord) {
 			keys = p.keyRecord[p.keyIndex]
 		} else {
 			keys = []ebiten.Key{}
 		}
+		p.keyIndex++
 	}
 
 	sawDown := false
@@ -183,23 +183,24 @@ func (p *Player) Update(world *World, keys []ebiten.Key) {
 				p.newY = p.yRecord[p.keyIndex]
 			}
 		}
+
+		for _, shadow := range world.players {
+			if p == shadow {
+				continue
+			}
+
+			if math.Abs(shadow.y-p.newY) < 16 && math.Abs(shadow.x-p.newX) < 16 {
+				gameover = true
+				shaking = true
+				shakeCounter = 120
+				goCause = "collision"
+				fmt.Println("gameover, collision")
+				lostSound.Rewind()
+				lostSound.Play()
+			}
+		}
 	}
 
-	for _, shadow := range world.players {
-		if p == shadow {
-			continue
-		}
-
-		if math.Abs(shadow.y-p.newY) < 16 && math.Abs(shadow.x-p.newX) < 16 {
-			gameover = true
-			shaking = true
-			shakeCounter = 120
-			goCause = "collision"
-			fmt.Println("gameover, collision")
-			lostSound.Rewind()
-			lostSound.Play()
-		}
-	}
 }
 
 func (w *Player) UpdateAnyway() {
