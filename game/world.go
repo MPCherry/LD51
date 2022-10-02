@@ -575,6 +575,8 @@ var winSound *audio.Player
 var lostSound *audio.Player
 var song1 *audio.Player
 var song2 *audio.Player
+var song3 *audio.Player
+var song4 *audio.Player
 
 func initSounds() {
 	dat, _ := os.ReadFile("resources/sounds/jump.wav")
@@ -628,10 +630,24 @@ func initSounds() {
 	dat, _ = os.ReadFile("resources/sounds/song2.wav")
 	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
 	song2, _ = audioContext.NewPlayer(d)
+
+	dat, _ = os.ReadFile("resources/sounds/song3.wav")
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	song3, _ = audioContext.NewPlayer(d)
+
+	dat, _ = os.ReadFile("resources/sounds/song4.wav")
+	d, _ = wav.DecodeWithoutResampling(bytes.NewReader(dat))
+	song4, _ = audioContext.NewPlayer(d)
 }
 
+var lastPlayed = 0
+
 func playMusic() {
-	song := rand.Intn(2)
+	song := rand.Intn(4)
+	for song == lastPlayed {
+		song = rand.Intn(4)
+	}
+	lastPlayed = song
 	switch song {
 	case 0:
 		song1.Rewind()
@@ -639,10 +655,18 @@ func playMusic() {
 	case 1:
 		song2.Rewind()
 		song2.Play()
+	case 2:
+		song3.Rewind()
+		song3.Play()
+	case 3:
+		song4.Rewind()
+		song4.Play()
 	}
 }
 
 func stopMusic() {
 	song1.Pause()
 	song2.Pause()
+	song3.Pause()
+	song4.Pause()
 }
